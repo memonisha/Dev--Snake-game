@@ -27,7 +27,7 @@ def setup():
 
 def draw():
   global snake, tail, gamestate, youlose
-  assets['bgmusic'].play()
+  #assets['bgmusic'].play()
   background('black')
   drawTickAxes()
   fill ("white")
