@@ -14,9 +14,11 @@ def setup():
   loadSound ('eat.mp3', 'eat')
   loadSound ('lose.mp3', 'lose')
   loadSound ('bgmusic.mp3', 'bgmusic')
+  loadFont ('fredoka.ttf', "font")
+  textFont (assets['font'])
   
   frameRate (15)
-  listx = [0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000]
+  listx = [0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975]
   listy = [0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675]
   foodx = random.choice (listx) 
   foody = random.choice (listy)
@@ -24,10 +26,11 @@ def setup():
   youlose = False
   
   
+  
 
 def draw():
   global snake, tail, gamestate, youlose
-  #assets['bgmusic'].play()
+  
   background('black')
   drawTickAxes()
   fill ("white")
@@ -45,6 +48,7 @@ def draw():
     if youlose == False:
       assets['lose'].play()
       youlose = True
+      assets['bgmusic'].stop ()
   #moving up
   if keyCode == 39 and gamestate == True:
     if snake["direction"] == "left":
@@ -79,7 +83,10 @@ def draw():
     collectfood ()
     fill ("white")
     textSize (20)
-    text (f"score: {score}", 60, 650)
+    text (f"Score: {score}", 60, 650)
+    if assets['bgmusic'].isPlaying() == False:
+      assets['bgmusic'].play()
+      assets['bgmusic'].setVolume (0.15)
       
 
 ''' #tailnew=[ {-25, 0}, {-50, 0}, {-75, 0},{?,?}]
@@ -135,5 +142,14 @@ def collectfood ():
     score = score + 1
     assets['eat'].play()
     
-  
+'''
+[0,1,2,3,4,5....]
+k=len(tail)
+k-1
+0
+-1
+for i in range()
+
+
+'''
   
