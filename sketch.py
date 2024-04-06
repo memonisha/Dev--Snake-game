@@ -2,12 +2,24 @@ from p5 import *
 import random
 
 def setup():
-  global snake, tail, gamestate, foodx, foody, listx, listy, score, youlose
-  snake = {"x":200, "y":150, "direction" :"left"}
-  tail = [{"x":225, "y":150}]
+  global gamestate, foodx, foody, listx, listy, score, youlose
+  global snakeHead,tail,snakeSpeed
+  
+  #snake = {"x":200, "y":150, "direction" :"left"}
+  #tail = [{"x":225, "y":150}]
+  snakeHead={
+    'x':225,
+    'y':250,
+    'size':25
+  }
+  tail=[{'x':250,'y':250},{'x':275,'y':250},{'x':300,'y':250}]
+  snakeSpeed = {
+    "x": 0,
+    "y": 0
+  }
   createCanvas(1000,700)
-  tail.append({"x":250, "y":150})
-  tail.append({"x":275, "y":150})
+  #tail.append({"x":250, "y":150})
+  #tail.append({"x":275, "y":150})
   textAlign (CENTER)
   textSize (100)
   gamestate = True
@@ -33,13 +45,7 @@ def draw():
   
   background('black')
   drawTickAxes()
-  fill ("white")
-  square (snake["x"], snake["y"], 25)
-  fill("grey")
-  # 3----range(3)----0,1,2
-  for i in range(len(tail)):
-    square (tail[i]["x"], tail[i]["y"], 25)
-    
+  
   if gamestate == False:
     background ('black')
     fill ("red")
@@ -49,6 +55,22 @@ def draw():
       assets['lose'].play()
       youlose = True
       assets['bgmusic'].stop ()
+  elif gamestate == True:
+    snake()
+    snakeUpdate()
+    createfood ()
+    collectfood ()
+    edges()
+    fill ("white")
+    textSize (20)
+    text (f"Score: {score}", 60, 650)
+    text ("Song: djjaner - cosmic dreamer", 855, 675)
+    text ("sfx from zapslat.com", 900, 650)
+    if assets['bgmusic'].isPlaying() == False:
+      assets['bgmusic'].play()
+      assets['bgmusic'].setVolume (0.15)
+
+  '''
   #moving up
   if keyCode == 39 and gamestate == True:
     if snake["direction"] == "left":
@@ -77,34 +99,7 @@ def draw():
     else:
       snake["direction"] = "down"
       movesnake ({"x":0,"y":-25}, 0, 25, 0, 50, 0, 75)
-  edges ()
-  if gamestate == True:
-    createfood ()
-    collectfood ()
-    fill ("white")
-    textSize (20)
-    text (f"Score: {score}", 60, 650)
-    if assets['bgmusic'].isPlaying() == False:
-      assets['bgmusic'].play()
-      assets['bgmusic'].setVolume (0.15)
-      
-
-''' #tailnew=[ {-25, 0}, {-50, 0}, {-75, 0},{?,?}]
-# k=len(tail)
-for n in range(k)
-if snakedir=="right":
-  for i in range(tailpos):
-     
-def movesnake(s,tailnew):
-   global snake
-   snake["x"]+=s["x"]
-   snake["y"]+=s["y"]
-
-   for i in range(len(tail)):
-       for h in range:
-         tail[i]["x"] = snake["x"] +h
-         tail[i]["y"] = snake["y"] + h
-   
+  '''
 
 
 '''
@@ -121,9 +116,11 @@ def movesnake(s,t0x,t0y,t1x,t1y,t2x,t2y):
   
   tail[2]["x"] = snake["x"] + t2x
   tail[2]["y"] = snake["y"] + t2y
+'''
+
 def edges ():
-  global snake, gamestate
-  if snake["x"] < 0 or snake["y"] < 0 or snake["x"] > 1000 or snake["y"] > 675:
+  global snakeHead, gamestate
+  if snakeHead["x"] < 0 or snakeHead["y"] < 0 or snakeHead["x"] > 1000 or snakeHead["y"] > 675:
     gamestate = False
   
 def createfood ():
@@ -132,24 +129,68 @@ def createfood ():
   global foodx, foody
  
   square (foodx, foody, 25)
+
+
 def collectfood ():
-  global snake, foodx, foody, tail, listx, listy, score
-  if snake["x"] == foodx and snake["y"] == foody:
+  global snakeHead, foodx, foody, tail, listx, listy, score, snakeSpeed 
+  if snakeHead["x"] == foodx and snakeHead["y"] == foody:
     foodx = random.choice (listx) 
     foody = random.choice (listy)
     length=len(tail)
     #tail.append({"x":tail[length-1]["x"]+50, "y":tail[length-1]["y"]+50})
     score = score + 1
     assets['eat'].play()
-    
-'''
-[0,1,2,3,4,5....]
-k=len(tail)
-k-1
-0
--1
-for i in range()
+
+    size=snakeHead['size']
+    lastIndex=len(tail)-1
+    tail.append({
+      'x':tail[lastIndex]['x']-size,
+      'y':tail[lastIndex]['y']
+    })
 
 
-'''
+def snake():
+  global snakeHead,snakeTail
+  fill("grey")
+  square(snakeHead['x'],snakeHead['y'],snakeHead['size'])
+  for i in range( len(tail)):
+    fill('white')
+    square(tail[i]['x'],tail[i]['y'],25)
+
+
+def snakeDirection(x, y):
+  global snakeSpeed
+  snakeSpeed["x"] = x
+  snakeSpeed["y"] = y
+
+def keyPressed():
+  if keyCode == 37:
+    # left
+    snakeDirection(-1, 0)
+  elif keyCode == 38:
+    # up
+    snakeDirection(0, 1)
+  elif keyCode == 39:
+    # right
+    snakeDirection(1, 0)
+  elif keyCode == 40:
+    # down
+    snakeDirection(0, -1)
+
+def snakeUpdate ():
+  global snakeHead,tail,snakeSpeed
+  if snakeSpeed["x"] == 0 and snakeSpeed["y"] == 0:
+    pass 
+  else:
+  #  snake -> head, [tail0, tail1, tail2, tail3...]
+
+    for i in range (len(tail)-1, 0, -1):
+      tail[i]['x']=tail[i-1]['x']
+      tail[i]['y']=tail[i-1]['y']
+    tail[0]['x']=snakeHead['x']
+    tail[0]['y']=snakeHead['y']
+    snakeHead["x"] += snakeSpeed["x"]*25
+    snakeHead["y"] += snakeSpeed["y"]*25
+
+
   
